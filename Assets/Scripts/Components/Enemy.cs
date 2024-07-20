@@ -12,7 +12,7 @@ namespace Components
 
         private float _speed;
 
-        private int _health;
+        public HealthBlock HealthBlock { get; private set; }
 
         public event EventHandler<EventArgs> OnCrossedFinishLine;
         public event EventHandler<EventArgs> OnDied;
@@ -36,7 +36,8 @@ namespace Components
         {
             _speed = speed;
 
-            _health = maxHealth;
+            HealthBlock = new HealthBlock(maxHealth);
+            HealthBlock.OnHealthChanged += OnHealthChanged;
         }
 
         public void TimeTick(float deltaTime)
@@ -52,23 +53,9 @@ namespace Components
             }
         }
 
-        public void TakeDamage(int damage)
+        private void OnHealthChanged(object sender, EventArgs e)
         {
-            if (damage > _health)
-            {
-                damage = _health;
-            }
-
-            if (damage <= 0)
-            {
-                return;
-            }
-
-            _health -= damage;
-
-            // TODO update UI flash red
-
-            if (_health == 0)
+            if (HealthBlock.Health == 0)
             {
                 OnDied?.Invoke(this, EventArgs.Empty);
             }

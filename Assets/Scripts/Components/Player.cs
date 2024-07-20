@@ -20,10 +20,11 @@ namespace Components
         private float _shootRange;
         private float _shootCooldownSeconds;
 
-        private int _health;
         private float _timeTillShoot;
 
         private Direction _currentFacingDirection;
+
+        public HealthBlock HealthBlock { get; private set; }
 
         public event EventHandler<EventArgs> OnDied;
 
@@ -52,7 +53,8 @@ namespace Components
             _shootRange = shootRange;
             _shootCooldownSeconds = shootCooldownSeconds;
 
-            _health = maxHealth;
+            HealthBlock = new HealthBlock(maxHealth);
+            HealthBlock.OnHealthChanged += OnHealthChanged;
 
             _currentFacingDirection = Direction.Left;
         }
@@ -60,50 +62,15 @@ namespace Components
         public void TimeTick(float deltaTime)
         {
             ProcessInput(deltaTime);
-
-            if (_enemyService.TryGetNearestEnemy(transform.position, _shootRange, out var enemy))
-            {
-                if (_timeTillShoot <= 0)
-                {
-                    ShootAtEnemy(enemy);
-                }
-
-                Debug.DrawLine(transform.position, enemy.transform.position, Color.green); // TODO targeting
-            }
-
-            if (_timeTillShoot > 0)
-            {
-                _timeTillShoot -= deltaTime;
-            }
+            ProcessShooting(deltaTime);
         }
 
-        public void TakeDamage(int damage)
+        private void OnHealthChanged(object sender, EventArgs e)
         {
-            if (damage > _health)
-            {
-                damage = _health;
-            }
-
-            if (damage <= 0)
-            {
-                return;
-            }
-
-            _health -= damage;
-
-            Debug.LogWarning(_health); // TODO update UI
-
-            if (_health == 0)
+            if (HealthBlock.Health == 0)
             {
                 OnDied?.Invoke(this, EventArgs.Empty);
             }
-        }
-
-        private void ShootAtEnemy(Enemy nearestEnemy)
-        {
-            nearestEnemy.TakeDamage(_damage);
-            _timeTillShoot = _shootCooldownSeconds;
-            Debug.LogWarning("Shoot!"); // TODO spawn projectile
         }
 
         private void ProcessInput(float deltaTime)
@@ -135,6 +102,31 @@ namespace Components
             newPositionY = Mathf.Clamp(newPositionY, Constants.PlayerMoveBottomBorder, Constants.PlayerMoveTopBorder);
 
             transform.position = new Vector3(newPositionX, newPositionY, 0f);
+        }
+
+        private void ProcessShooting(float deltaTime)
+        {
+            if (_enemyService.TryGetNearestEnemy(transform.position, _shootRange, out var enemy))
+            {
+                if (_timeTillShoot <= 0)
+                {
+                    ShootAtEnemy(enemy);
+                }
+
+                Debug.DrawLine(transform.position, enemy.transform.position, Color.green); // TODO targeting
+            }
+
+            if (_timeTillShoot > 0)
+            {
+                _timeTillShoot -= deltaTime;
+            }
+        }
+
+        private void ShootAtEnemy(Enemy nearestEnemy)
+        {
+            nearestEnemy.HealthBlock.TakeDamage(_damage);
+            _timeTillShoot = _shootCooldownSeconds;
+            Debug.LogWarning("Shoot!"); // TODO spawn projectile
         }
 
         private void RotateModel(Direction direction)

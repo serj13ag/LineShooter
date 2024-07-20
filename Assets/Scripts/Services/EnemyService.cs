@@ -109,7 +109,7 @@ namespace Services
 
             enemy.OnCrossedFinishLine -= OnEnemyCrossedFinishLine;
 
-            _gameFactory.Player.TakeDamage(Constants.EnemyDamage);
+            _gameFactory.Player.HealthBlock.TakeDamage(Constants.EnemyDamage);
 
             DestroyEnemy(enemy);
         }
