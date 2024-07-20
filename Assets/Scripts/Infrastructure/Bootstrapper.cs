@@ -21,6 +21,9 @@ namespace Infrastructure
 
         private void CreateServices(ServiceLocator serviceLocator)
         {
+            IRandomService randomService = new RandomService();
+            serviceLocator.Register(randomService);
+
             ISceneLoader sceneLoader = new SceneLoader(this);
             serviceLocator.Register(sceneLoader);
 
@@ -39,6 +42,16 @@ namespace Infrastructure
                 serviceLocator.Get<IStaticDataProvider>(),
                 serviceLocator.Get<IInputService>());
             serviceLocator.Register(gameFactory);
+
+            IEnemyFactory enemyFactory = new EnemyFactory(
+                serviceLocator.Get<IAssetProvider>(),
+                serviceLocator.Get<IStaticDataProvider>());
+            serviceLocator.Register(enemyFactory);
+
+            IEnemyService enemyService = new EnemyService(
+                serviceLocator.Get<IRandomService>(),
+                serviceLocator.Get<IEnemyFactory>());
+            serviceLocator.Register(enemyService);
         }
     }
 }

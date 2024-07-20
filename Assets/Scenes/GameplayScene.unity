@@ -1134,71 +1134,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1001 &2026114326
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 383185389258858616, guid: a405ad5b67107ea4ca87cc004db40e61, type: 3}
-      propertyPath: m_RootOrder
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 383185389258858616, guid: a405ad5b67107ea4ca87cc004db40e61, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.996
-      objectReference: {fileID: 0}
-    - target: {fileID: 383185389258858616, guid: a405ad5b67107ea4ca87cc004db40e61, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.471
-      objectReference: {fileID: 0}
-    - target: {fileID: 383185389258858616, guid: a405ad5b67107ea4ca87cc004db40e61, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 383185389258858616, guid: a405ad5b67107ea4ca87cc004db40e61, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 383185389258858616, guid: a405ad5b67107ea4ca87cc004db40e61, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 383185389258858616, guid: a405ad5b67107ea4ca87cc004db40e61, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 383185389258858616, guid: a405ad5b67107ea4ca87cc004db40e61, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 383185389258858616, guid: a405ad5b67107ea4ca87cc004db40e61, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 383185389258858616, guid: a405ad5b67107ea4ca87cc004db40e61, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 383185389258858616, guid: a405ad5b67107ea4ca87cc004db40e61, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2155541478158842169, guid: a405ad5b67107ea4ca87cc004db40e61, type: 3}
-      propertyPath: m_Name
-      value: GiantBeetle
-      objectReference: {fileID: 0}
-    - target: {fileID: 6204346790713318349, guid: a405ad5b67107ea4ca87cc004db40e61, type: 3}
-      propertyPath: m_SortingLayer
-      value: 2
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a405ad5b67107ea4ca87cc004db40e61, type: 3}
 --- !u!1001 &268138215936450778
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1314,7 +1249,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 697681992130378319, guid: dfe7a16edaf0c604390fdb8455dbf4ac, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 697681992130378319, guid: dfe7a16edaf0c604390fdb8455dbf4ac, type: 3}
       propertyPath: m_LocalPosition.x
