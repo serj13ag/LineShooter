@@ -22,7 +22,8 @@ namespace Infrastructure.StateMachine
             {
                 [typeof(GameplayLevelState)] = new GameplayLevelState(
                     serviceLocator.Get<ISceneLoader>(),
-                    serviceLocator.Get<IStaticDataProvider>()),
+                    serviceLocator.Get<IStaticDataProvider>(),
+                    serviceLocator.Get<IGameFactory>()),
             };
         }
 

@@ -30,6 +30,9 @@ namespace Infrastructure
             IStaticDataProvider staticDataProvider = new StaticDataProvider();
             staticDataProvider.LoadData();
             serviceLocator.Register(staticDataProvider);
+
+            IGameFactory gameFactory = new GameFactory(assetProvider);
+            serviceLocator.Register(gameFactory);
         }
     }
 }
