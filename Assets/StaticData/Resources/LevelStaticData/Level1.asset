@@ -21,7 +21,7 @@ MonoBehaviour:
   MinEnemySpeed: 0.2
   MaxEnemySpeed: 0.6
   PlayerMaxHealth: 10
-  PlayerShootRange: 2
+  PlayerShootRange: 4
   PlayerShootCooldownSeconds: 0.5
   PlayerDamage: 1
   PlayerProjectileSpeed: 1
