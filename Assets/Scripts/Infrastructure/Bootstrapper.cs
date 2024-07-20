@@ -31,7 +31,13 @@ namespace Infrastructure
             staticDataProvider.LoadData();
             serviceLocator.Register(staticDataProvider);
 
-            IGameFactory gameFactory = new GameFactory(assetProvider);
+            IInputService inputService = new InputService();
+            serviceLocator.Register(inputService);
+
+            IGameFactory gameFactory = new GameFactory(
+                serviceLocator.Get<IAssetProvider>(),
+                serviceLocator.Get<IStaticDataProvider>(),
+                serviceLocator.Get<IInputService>());
             serviceLocator.Register(gameFactory);
         }
     }

@@ -35,7 +35,7 @@ namespace Infrastructure.StateMachine
             var levelStaticData = _staticDataProvider.GetDataForLevel(_levelCode);
             Debug.Log(levelStaticData.LevelCode);
 
-            _gameFactory.SpawnPlayer(Constants.PlayerSpawnLocation);
+            _gameFactory.SpawnPlayer(Constants.PlayerSpawnLocation, _levelCode);
         }
     }
 }
