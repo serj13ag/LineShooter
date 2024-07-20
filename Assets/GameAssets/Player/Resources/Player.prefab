@@ -215,6 +215,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _modelTransform: {fileID: 7446296407514510819}
+  _animator: {fileID: 7192033363744133159}
+  _minAttackAnimationSpeed: 1
 --- !u!1 &1315759352830414
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,6 +597,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7446296407514510819}
   - component: {fileID: 7192033363744133159}
+  - component: {fileID: 7441180500438414901}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -641,3 +644,16 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7441180500438414901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3605747879666132705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df9beac75ef0c7c498375419f123d7b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _player: {fileID: 3568787297959976743}

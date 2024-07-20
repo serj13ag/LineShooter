@@ -31,12 +31,12 @@ namespace Components
             _timeService.Unsubscribe(this);
         }
 
-        public void Init(Enemy targetEnemy, float speed, int damage)
+        public void Init(Vector3 direction, float speed, int damage)
         {
             _speed = speed;
-            Damage = damage;
+            _direction = direction;
 
-            _direction = (targetEnemy.transform.position - transform.position).normalized;
+            Damage = damage;
         }
 
         public void TimeTick(float deltaTime)

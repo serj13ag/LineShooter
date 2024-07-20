@@ -9,7 +9,12 @@ namespace Components
 {
     public class Player : MonoBehaviour, ITimeTickable
     {
+        private static readonly int AttackSpeedMultiplierAnimatorFloat = Animator.StringToHash("AttackSpeedMultiplier");
+        private static readonly int AttackAnimatorTrigger = Animator.StringToHash("Attack");
+
         [SerializeField] private Transform _modelTransform;
+        [SerializeField] private Animator _animator;
+        [SerializeField] private float _minAttackAnimationSpeed;
 
         private IInputService _inputService;
         private ITimeService _timeService;
@@ -23,6 +28,7 @@ namespace Components
         private float _projectileSpeed;
 
         private float _timeTillShoot;
+        private Vector3 _shootDirection;
 
         private Direction _currentFacingDirection;
 
@@ -61,12 +67,20 @@ namespace Components
             HealthBlock.OnHealthChanged += OnHealthChanged;
 
             _currentFacingDirection = Direction.Left;
+
+            _animator.SetFloat(AttackSpeedMultiplierAnimatorFloat,
+                GetAttackSpeedAnimatorMultiplier(shootCooldownSeconds));
         }
 
         public void TimeTick(float deltaTime)
         {
             ProcessInput(deltaTime);
             ProcessShooting(deltaTime);
+        }
+
+        public void Shoot()
+        {
+            _gameFactory.SpawnProjectile(transform.position, _shootDirection, _projectileSpeed, _damage);
         }
 
         private void OnHealthChanged(object sender, EventArgs e)
@@ -114,7 +128,7 @@ namespace Components
             {
                 if (_timeTillShoot <= 0)
                 {
-                    ShootAtEnemy(enemy);
+                    StartShoot(enemy.transform.position);
                 }
             }
 
@@ -124,9 +138,10 @@ namespace Components
             }
         }
 
-        private void ShootAtEnemy(Enemy nearestEnemy)
+        private void StartShoot(Vector3 targetPosition)
         {
-            _gameFactory.SpawnProjectile(transform.position, nearestEnemy, _projectileSpeed, _damage);
+            _shootDirection = (targetPosition - transform.position).normalized;
+            _animator.SetTrigger(AttackAnimatorTrigger);
             _timeTillShoot = _shootCooldownSeconds;
         }
 
@@ -141,6 +156,12 @@ namespace Components
 
             _modelTransform.localScale = new Vector3(-_modelTransform.localScale.x, _modelTransform.localScale.y,
                 _modelTransform.localScale.z);
+        }
+
+        private float GetAttackSpeedAnimatorMultiplier(float shootCooldownSeconds)
+        {
+            var multiplier = 1f / shootCooldownSeconds;
+            return Mathf.Max(multiplier, _minAttackAnimationSpeed);
         }
     }
 }
