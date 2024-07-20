@@ -50,16 +50,13 @@ namespace Infrastructure
 
             IGameFactory gameFactory = new GameFactory(
                 serviceLocator.Get<IAssetProvider>(),
-                serviceLocator.Get<IStaticDataProvider>(),
-                serviceLocator.Get<IInputService>(),
-                serviceLocator.Get<ITimeService>());
+                serviceLocator.Get<IStaticDataProvider>());
             serviceLocator.Register(gameFactory);
 
             IEnemyFactory enemyFactory = new EnemyFactory(
                 serviceLocator.Get<IRandomService>(),
                 serviceLocator.Get<IAssetProvider>(),
-                serviceLocator.Get<IStaticDataProvider>(),
-                serviceLocator.Get<ITimeService>());
+                serviceLocator.Get<IStaticDataProvider>());
             serviceLocator.Register(enemyFactory);
 
             IEnemyService enemyService = new EnemyService(

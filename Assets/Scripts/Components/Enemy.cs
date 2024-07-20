@@ -1,3 +1,4 @@
+using Infrastructure;
 using Interfaces;
 using Services;
 using UnityEngine;
@@ -10,12 +11,24 @@ namespace Components
 
         private float _enemySpeed;
 
-        public void Init(ITimeService timeService, int enemyMaxHealth, float enemySpeed)
+        private void Awake()
+        {
+            _timeService = ServiceLocator.Instance.Get<ITimeService>();
+        }
+
+        private void OnEnable()
+        {
+            _timeService.Subscribe(this);
+        }
+
+        private void OnDisable()
+        {
+            _timeService.Unsubscribe(this);
+        }
+
+        public void Init(int enemyMaxHealth, float enemySpeed)
         {
             _enemySpeed = enemySpeed;
-            _timeService = timeService;
-
-            _timeService.Subscribe(this); // TODO unsub
         }
 
         public void TimeTick(float deltaTime)

@@ -1,4 +1,5 @@
 using Enums;
+using Infrastructure;
 using Interfaces;
 using Services;
 using UnityEngine;
@@ -16,17 +17,28 @@ namespace Components
 
         private Direction _currentFacingDirection;
 
-        public void Init(IInputService inputService, ITimeService timeService, int maxHealth, int damage,
-            float playerMoveSpeed, float shootRange, float shootCooldownSeconds, float projectileSpeed)
+        private void Awake()
         {
-            _inputService = inputService;
-            _timeService = timeService;
+            _inputService = ServiceLocator.Instance.Get<IInputService>();
+            _timeService = ServiceLocator.Instance.Get<ITimeService>();
+        }
 
+        private void OnEnable()
+        {
+            _timeService.Subscribe(this);
+        }
+
+        private void OnDisable()
+        {
+            _timeService.Unsubscribe(this);
+        }
+
+        public void Init(int maxHealth, int damage, float playerMoveSpeed, float shootRange, float shootCooldownSeconds,
+            float projectileSpeed)
+        {
             _playerMoveSpeed = playerMoveSpeed;
 
             _currentFacingDirection = Direction.Left;
-
-            _timeService.Subscribe(this); // TODO unsub
         }
 
         public void TimeTick(float deltaTime)

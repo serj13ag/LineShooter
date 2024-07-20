@@ -12,16 +12,11 @@ namespace Services
     {
         private readonly IAssetProvider _assetProvider;
         private readonly IStaticDataProvider _staticDataProvider;
-        private readonly IInputService _inputService;
-        private readonly ITimeService _timeService;
 
-        public GameFactory(IAssetProvider assetProvider, IStaticDataProvider staticDataProvider,
-            IInputService inputService, ITimeService timeService)
+        public GameFactory(IAssetProvider assetProvider, IStaticDataProvider staticDataProvider)
         {
             _assetProvider = assetProvider;
             _staticDataProvider = staticDataProvider;
-            _inputService = inputService;
-            _timeService = timeService;
         }
 
         public void SpawnPlayer(Vector2 location, string levelCode)
@@ -30,8 +25,8 @@ namespace Services
 
             var levelStaticData = _staticDataProvider.GetDataForLevel(levelCode);
 
-            player.Init(_inputService, _timeService, levelStaticData.PlayerMaxHealth, levelStaticData.PlayerDamage,
-                Constants.PlayerMoveSpeed, levelStaticData.PlayerShootRange, levelStaticData.PlayerShootCooldownSeconds,
+            player.Init(levelStaticData.PlayerMaxHealth, levelStaticData.PlayerDamage, Constants.PlayerMoveSpeed,
+                levelStaticData.PlayerShootRange, levelStaticData.PlayerShootCooldownSeconds,
                 levelStaticData.PlayerProjectileSpeed);
         }
     }

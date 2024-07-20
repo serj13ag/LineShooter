@@ -6,6 +6,7 @@ namespace Services
     public interface ITimeService : IService
     {
         void Subscribe(ITimeTickable timeTickable);
+        void Unsubscribe(ITimeTickable timeTickable);
 
         void UpdateTick(float deltaTime);
     }
@@ -19,6 +20,11 @@ namespace Services
         public void Subscribe(ITimeTickable timeTickable)
         {
             _timeTickables.Add(timeTickable);
+        }
+
+        public void Unsubscribe(ITimeTickable timeTickable)
+        {
+            _timeTickables.Remove(timeTickable);
         }
 
         public void UpdateTick(float deltaTime)
