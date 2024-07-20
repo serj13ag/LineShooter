@@ -14,7 +14,7 @@ namespace Services
         private readonly IStaticDataProvider _staticDataProvider;
         private readonly IRandomService _randomService;
         private readonly IEnemyFactory _enemyFactory;
-        private readonly ITimeService _timeService; // TODO unsubscribe
+        private readonly ITimeService _timeService;
 
         private readonly List<Vector2> _spawnLocations;
 
@@ -31,13 +31,13 @@ namespace Services
             _enemyFactory = enemyFactory;
             _timeService = timeService;
 
-            _timeService.Subscribe(this);
-
             _spawnLocations = Constants.EnemySpawnLocations;
         }
 
         public void StartSpawnEnemies(string levelCode)
         {
+            _timeService.Subscribe(this); // TODO unsubscribe
+
             _levelCode = levelCode;
 
             var levelStaticData = _staticDataProvider.GetDataForLevel(_levelCode);

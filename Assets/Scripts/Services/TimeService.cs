@@ -12,6 +12,8 @@ namespace Services
 
     public class TimeService : ITimeService
     {
+        private const float GameSpeed = 1f;
+
         private readonly List<ITimeTickable> _timeTickables = new List<ITimeTickable>();
 
         public void Subscribe(ITimeTickable timeTickable)
@@ -21,9 +23,9 @@ namespace Services
 
         public void UpdateTick(float deltaTime)
         {
-            foreach (var timeTickable in _timeTickables)
+            foreach (var timeTickable in _timeTickables.ToArray())
             {
-                timeTickable.TimeTick(deltaTime);
+                timeTickable.TimeTick(deltaTime * GameSpeed);
             }
         }
     }

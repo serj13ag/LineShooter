@@ -1,30 +1,35 @@
 using Enums;
+using Interfaces;
 using Services;
 using UnityEngine;
 
 namespace Components
 {
-    public class Player : MonoBehaviour
+    public class Player : MonoBehaviour, ITimeTickable
     {
         [SerializeField] private Transform _modelTransform;
 
         private IInputService _inputService;
+        private ITimeService _timeService;
 
         private float _playerMoveSpeed;
 
         private Direction _currentFacingDirection;
 
-        public void Init(IInputService inputService, int maxHealth, int damage, float playerMoveSpeed, float shootRange,
-            float shootCooldownSeconds, float projectileSpeed)
+        public void Init(IInputService inputService, ITimeService timeService, int maxHealth, int damage,
+            float playerMoveSpeed, float shootRange, float shootCooldownSeconds, float projectileSpeed)
         {
             _inputService = inputService;
+            _timeService = timeService;
 
             _playerMoveSpeed = playerMoveSpeed;
 
             _currentFacingDirection = Direction.Left;
+
+            _timeService.Subscribe(this); // TODO unsub
         }
 
-        private void Update() // TODO time service
+        public void TimeTick(float deltaTime)
         {
             var inputAxis = _inputService.Axis;
 
@@ -38,14 +43,14 @@ namespace Components
 
             if (inputAxis.x != 0)
             {
-                newPositionX += inputAxis.x * _playerMoveSpeed * Time.deltaTime;
+                newPositionX += inputAxis.x * _playerMoveSpeed * deltaTime;
 
                 RotateModel(inputAxis.x > 0 ? Direction.Right : Direction.Left);
             }
 
             if (inputAxis.y != 0)
             {
-                newPositionY += inputAxis.y * _playerMoveSpeed * Time.deltaTime;
+                newPositionY += inputAxis.y * _playerMoveSpeed * deltaTime;
             }
 
             newPositionX = Mathf.Clamp(newPositionX, -Constants.PlayerMoveHorizontalBorder, Constants.PlayerMoveHorizontalBorder);
