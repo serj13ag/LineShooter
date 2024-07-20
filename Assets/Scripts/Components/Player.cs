@@ -14,11 +14,13 @@ namespace Components
         private IInputService _inputService;
         private ITimeService _timeService;
         private IEnemyService _enemyService;
+        private IGameFactory _gameFactory;
 
         private float _moveSpeed;
         private int _damage;
         private float _shootRange;
         private float _shootCooldownSeconds;
+        private float _projectileSpeed;
 
         private float _timeTillShoot;
 
@@ -33,6 +35,7 @@ namespace Components
             _inputService = ServiceLocator.Instance.Get<IInputService>();
             _timeService = ServiceLocator.Instance.Get<ITimeService>();
             _enemyService = ServiceLocator.Instance.Get<IEnemyService>();
+            _gameFactory = ServiceLocator.Instance.Get<IGameFactory>();
         }
 
         private void OnEnable()
@@ -52,6 +55,7 @@ namespace Components
             _damage = damage;
             _shootRange = shootRange;
             _shootCooldownSeconds = shootCooldownSeconds;
+            _projectileSpeed = projectileSpeed;
 
             HealthBlock = new HealthBlock(maxHealth);
             HealthBlock.OnHealthChanged += OnHealthChanged;
@@ -112,8 +116,6 @@ namespace Components
                 {
                     ShootAtEnemy(enemy);
                 }
-
-                Debug.DrawLine(transform.position, enemy.transform.position, Color.green); // TODO targeting
             }
 
             if (_timeTillShoot > 0)
@@ -124,9 +126,8 @@ namespace Components
 
         private void ShootAtEnemy(Enemy nearestEnemy)
         {
-            nearestEnemy.HealthBlock.TakeDamage(_damage);
+            _gameFactory.SpawnProjectile(transform.position, nearestEnemy, _projectileSpeed, _damage);
             _timeTillShoot = _shootCooldownSeconds;
-            Debug.LogWarning("Shoot!"); // TODO spawn projectile
         }
 
         private void RotateModel(Direction direction)

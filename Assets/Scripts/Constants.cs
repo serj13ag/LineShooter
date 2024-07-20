@@ -9,6 +9,7 @@ public static class Constants
     // Resource Paths
     public const string LevelDataResourcesPath = "LevelStaticData";
     public const string PlayerPrefabResourcePath = "Player";
+    public const string PlayerProjectileResourcePath = "PlayerProjectile";
     public const string EnemyPrefabResourcePath = "GiantBeetle";
 
     // Player Settings
