@@ -5,7 +5,7 @@ namespace Services
 {
     public interface IEnemyFactory : IService
     {
-        void SpawnEnemy(Vector2 location, string levelCode);
+        Enemy SpawnEnemy(Vector2 location, string levelCode);
     }
 
     public class EnemyFactory : IEnemyFactory
@@ -22,7 +22,7 @@ namespace Services
             _staticDataProvider = staticDataProvider;
         }
 
-        public void SpawnEnemy(Vector2 location, string levelCode)
+        public Enemy SpawnEnemy(Vector2 location, string levelCode)
         {
             var enemy = _assetProvider.Instantiate<Enemy>(Constants.EnemyPrefabResourcePath, location);
 
@@ -30,6 +30,7 @@ namespace Services
 
             var enemySpeed = _randomService.Range(levelStaticData.MinEnemySpeed, levelStaticData.MaxEnemySpeed);
             enemy.Init(levelStaticData.EnemyMaxHealth, enemySpeed);
+            return enemy;
         }
     }
 }

@@ -1,12 +1,17 @@
+using System;
 using System.Collections.Generic;
+using Components;
 using Interfaces;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Services
 {
     public interface IEnemyService : IService, ITimeTickable
     {
         void StartSpawnEnemies(string levelCode);
+
+        bool TryGetNearestEnemy(Vector3 position, out Enemy nearestEnemy);
     }
 
     public class EnemyService : IEnemyService
@@ -17,6 +22,8 @@ namespace Services
         private readonly ITimeService _timeService;
 
         private readonly List<Vector2> _spawnLocations;
+
+        private readonly List<Enemy> _enemies = new List<Enemy>();
 
         private float _minSpawnEnemyCooldownSeconds;
         private float _maxSpawnEnemyCooldownSeconds;
@@ -60,11 +67,44 @@ namespace Services
             }
         }
 
+        public bool TryGetNearestEnemy(Vector3 position, out Enemy nearestEnemy)
+        {
+            nearestEnemy = null;
+            var distanceToNearestEnemy = float.MaxValue;
+
+            foreach (var enemy in _enemies)
+            {
+                var distanceToEnemy = Vector3.Distance(position, enemy.transform.position);
+
+                if (distanceToEnemy >= distanceToNearestEnemy)
+                {
+                    continue;
+                }
+
+                nearestEnemy = enemy;
+                distanceToNearestEnemy = distanceToEnemy;
+            }
+
+            return nearestEnemy != null;
+        }
+
         private void SpawnEnemy()
         {
             var spawnLocation = GetRandomSpawnLocation();
-            _enemyFactory.SpawnEnemy(spawnLocation, _levelCode);
+            var enemy = _enemyFactory.SpawnEnemy(spawnLocation, _levelCode);
+
+            enemy.OnCrossedFinishLine += OnEnemyCrossedFinishLine;
+
+            _enemies.Add(enemy);
+
             _secondsTillSpawnEnemy = GetRandomSpawnEnemyCooldownSeconds();
+        }
+
+        private void OnEnemyCrossedFinishLine(object sender, EventArgs e)
+        {
+            var enemy = (Enemy)sender;
+            Object.Destroy(enemy.gameObject);
+            _enemies.Remove(enemy);
         }
 
         private Vector2 GetRandomSpawnLocation()

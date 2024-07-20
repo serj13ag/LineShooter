@@ -1,3 +1,4 @@
+using System;
 using Infrastructure;
 using Interfaces;
 using Services;
@@ -7,6 +8,8 @@ namespace Components
 {
     public class Enemy : MonoBehaviour, ITimeTickable
     {
+        public event EventHandler<EventArgs> OnCrossedFinishLine;
+
         private ITimeService _timeService;
 
         private float _enemySpeed;
@@ -36,6 +39,12 @@ namespace Components
             var newPositionY = transform.position.y - _enemySpeed * deltaTime;
 
             transform.position = new Vector3(transform.position.x, newPositionY, transform.position.z);
+
+            var crossedFinishLine = transform.position.y < Constants.PlayerMoveTopBorder;
+            if (crossedFinishLine)
+            {
+                OnCrossedFinishLine?.Invoke(this, EventArgs.Empty);
+            }
         }
     }
 }

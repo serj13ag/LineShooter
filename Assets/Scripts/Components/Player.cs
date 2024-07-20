@@ -12,6 +12,7 @@ namespace Components
 
         private IInputService _inputService;
         private ITimeService _timeService;
+        private IEnemyService _enemyService;
 
         private float _playerMoveSpeed;
 
@@ -21,6 +22,7 @@ namespace Components
         {
             _inputService = ServiceLocator.Instance.Get<IInputService>();
             _timeService = ServiceLocator.Instance.Get<ITimeService>();
+            _enemyService = ServiceLocator.Instance.Get<IEnemyService>();
         }
 
         private void OnEnable()
@@ -42,6 +44,16 @@ namespace Components
         }
 
         public void TimeTick(float deltaTime)
+        {
+            ProcessInput(deltaTime);
+
+            if (_enemyService.TryGetNearestEnemy(transform.position, out var enemy))
+            {
+                Debug.DrawLine(transform.position, enemy.transform.position, Color.green); // TODO targeting
+            }
+        }
+
+        private void ProcessInput(float deltaTime)
         {
             var inputAxis = _inputService.Axis;
 
@@ -73,15 +85,15 @@ namespace Components
 
         private void RotateModel(Direction direction)
         {
-            if (_currentFacingDirection != direction)
+            if (_currentFacingDirection == direction)
             {
-                _currentFacingDirection = direction;
-
-                _modelTransform.localScale = new Vector3(
-                    -_modelTransform.localScale.x,
-                    _modelTransform.localScale.y,
-                    _modelTransform.localScale.z);
+                return;
             }
+
+            _currentFacingDirection = direction;
+
+            _modelTransform.localScale = new Vector3(-_modelTransform.localScale.x, _modelTransform.localScale.y,
+                _modelTransform.localScale.z);
         }
     }
 }
