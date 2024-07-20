@@ -62,6 +62,7 @@ namespace Infrastructure
             IEnemyService enemyService = new EnemyService(
                 serviceLocator.Get<IStaticDataProvider>(),
                 serviceLocator.Get<IRandomService>(),
+                serviceLocator.Get<IGameFactory>(),
                 serviceLocator.Get<IEnemyFactory>(),
                 serviceLocator.Get<ITimeService>());
             serviceLocator.Register(enemyService);

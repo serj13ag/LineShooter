@@ -5,7 +5,9 @@ namespace Services
 {
     public interface IGameFactory : IService
     {
-        void SpawnPlayer(Vector2 location, string levelCode);
+        Player Player { get; }
+
+        Player SpawnPlayer(Vector2 location, string levelCode);
     }
 
     public class GameFactory : IGameFactory
@@ -13,21 +15,25 @@ namespace Services
         private readonly IAssetProvider _assetProvider;
         private readonly IStaticDataProvider _staticDataProvider;
 
+        public Player Player { get; private set; }
+
         public GameFactory(IAssetProvider assetProvider, IStaticDataProvider staticDataProvider)
         {
             _assetProvider = assetProvider;
             _staticDataProvider = staticDataProvider;
         }
 
-        public void SpawnPlayer(Vector2 location, string levelCode)
+        public Player SpawnPlayer(Vector2 location, string levelCode)
         {
-            var player = _assetProvider.Instantiate<Player>(Constants.PlayerPrefabResourcePath, location);
+            Player = _assetProvider.Instantiate<Player>(Constants.PlayerPrefabResourcePath, location);
 
             var levelStaticData = _staticDataProvider.GetDataForLevel(levelCode);
 
-            player.Init(levelStaticData.PlayerMaxHealth, levelStaticData.PlayerDamage, Constants.PlayerMoveSpeed,
+            Player.Init(levelStaticData.PlayerMaxHealth, levelStaticData.PlayerDamage, Constants.PlayerMoveSpeed,
                 levelStaticData.PlayerShootRange, levelStaticData.PlayerShootCooldownSeconds,
                 levelStaticData.PlayerProjectileSpeed);
+
+            return Player;
         }
     }
 }

@@ -24,7 +24,8 @@ namespace Infrastructure.StateMachine
                     serviceLocator.Get<ISceneLoader>(),
                     serviceLocator.Get<IStaticDataProvider>(),
                     serviceLocator.Get<IGameFactory>(),
-                    serviceLocator.Get<IEnemyService>()),
+                    serviceLocator.Get<IEnemyService>(),
+                    serviceLocator.Get<ITimeService>()),
             };
         }
 

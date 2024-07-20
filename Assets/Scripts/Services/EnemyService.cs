@@ -11,13 +11,14 @@ namespace Services
     {
         void StartSpawnEnemies(string levelCode);
 
-        bool TryGetNearestEnemy(Vector3 position, out Enemy nearestEnemy);
+        bool TryGetNearestEnemy(Vector3 position, float searchRange, out Enemy nearestEnemy);
     }
 
     public class EnemyService : IEnemyService
     {
         private readonly IStaticDataProvider _staticDataProvider;
         private readonly IRandomService _randomService;
+        private readonly IGameFactory _gameFactory;
         private readonly IEnemyFactory _enemyFactory;
         private readonly ITimeService _timeService;
 
@@ -31,10 +32,11 @@ namespace Services
         private string _levelCode;
 
         public EnemyService(IStaticDataProvider staticDataProvider, IRandomService randomService,
-            IEnemyFactory enemyFactory, ITimeService timeService)
+            IGameFactory gameFactory, IEnemyFactory enemyFactory, ITimeService timeService)
         {
             _staticDataProvider = staticDataProvider;
             _randomService = randomService;
+            _gameFactory = gameFactory;
             _enemyFactory = enemyFactory;
             _timeService = timeService;
 
@@ -67,7 +69,7 @@ namespace Services
             }
         }
 
-        public bool TryGetNearestEnemy(Vector3 position, out Enemy nearestEnemy)
+        public bool TryGetNearestEnemy(Vector3 position, float searchRange, out Enemy nearestEnemy)
         {
             nearestEnemy = null;
             var distanceToNearestEnemy = float.MaxValue;
@@ -76,7 +78,7 @@ namespace Services
             {
                 var distanceToEnemy = Vector3.Distance(position, enemy.transform.position);
 
-                if (distanceToEnemy >= distanceToNearestEnemy)
+                if (distanceToEnemy > searchRange || distanceToEnemy >= distanceToNearestEnemy)
                 {
                     continue;
                 }
@@ -103,6 +105,9 @@ namespace Services
         private void OnEnemyCrossedFinishLine(object sender, EventArgs e)
         {
             var enemy = (Enemy)sender;
+
+            _gameFactory.Player.TakeDamage(Constants.EnemyDamage);
+
             Object.Destroy(enemy.gameObject);
             _enemies.Remove(enemy);
         }

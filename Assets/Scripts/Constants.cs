@@ -19,6 +19,7 @@ public static class Constants
     public const float PlayerMoveBottomBorder = -3f;
 
     // Enemy Settings
+    public const int EnemyDamage = 1;
     public static readonly List<Vector2> EnemySpawnLocations = new List<Vector2>()
     {
         new Vector2(-1f, 3.5f),

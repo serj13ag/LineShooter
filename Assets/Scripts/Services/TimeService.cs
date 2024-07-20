@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Interfaces;
+using UnityEngine;
 
 namespace Services
 {
@@ -8,14 +9,15 @@ namespace Services
         void Subscribe(ITimeTickable timeTickable);
         void Unsubscribe(ITimeTickable timeTickable);
 
+        void SetGameSpeed(float gameSpeed);
+
         void UpdateTick(float deltaTime);
     }
 
     public class TimeService : ITimeService
     {
-        private const float GameSpeed = 1f;
-
         private readonly List<ITimeTickable> _timeTickables = new List<ITimeTickable>();
+        private float _gameSpeed = 1f;
 
         public void Subscribe(ITimeTickable timeTickable)
         {
@@ -27,11 +29,18 @@ namespace Services
             _timeTickables.Remove(timeTickable);
         }
 
+        public void SetGameSpeed(float gameSpeed)
+        {
+            gameSpeed = Mathf.Max(gameSpeed, 0f);
+
+            _gameSpeed = gameSpeed;
+        }
+
         public void UpdateTick(float deltaTime)
         {
             foreach (var timeTickable in _timeTickables.ToArray())
             {
-                timeTickable.TimeTick(deltaTime * GameSpeed);
+                timeTickable.TimeTick(deltaTime * _gameSpeed);
             }
         }
     }

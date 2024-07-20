@@ -1,3 +1,4 @@
+using System;
 using Enums;
 using Infrastructure;
 using Interfaces;
@@ -10,11 +11,15 @@ namespace Components
     {
         [SerializeField] private Transform _modelTransform;
 
+        public event EventHandler<EventArgs> OnDied;
+
         private IInputService _inputService;
         private ITimeService _timeService;
         private IEnemyService _enemyService;
 
-        private float _playerMoveSpeed;
+        private float _moveSpeed;
+        private float _shootRange;
+        private int _health;
 
         private Direction _currentFacingDirection;
 
@@ -38,7 +43,9 @@ namespace Components
         public void Init(int maxHealth, int damage, float playerMoveSpeed, float shootRange, float shootCooldownSeconds,
             float projectileSpeed)
         {
-            _playerMoveSpeed = playerMoveSpeed;
+            _moveSpeed = playerMoveSpeed;
+            _shootRange = shootRange;
+            _health = maxHealth;
 
             _currentFacingDirection = Direction.Left;
         }
@@ -47,9 +54,31 @@ namespace Components
         {
             ProcessInput(deltaTime);
 
-            if (_enemyService.TryGetNearestEnemy(transform.position, out var enemy))
+            if (_enemyService.TryGetNearestEnemy(transform.position, _shootRange, out var enemy))
             {
                 Debug.DrawLine(transform.position, enemy.transform.position, Color.green); // TODO targeting
+            }
+        }
+
+        public void TakeDamage(int damage)
+        {
+            if (damage > _health)
+            {
+                damage = _health;
+            }
+
+            if (damage <= 0)
+            {
+                return;
+            }
+
+            _health -= damage;
+
+            Debug.LogWarning(_health); // TODO update UI
+
+            if (_health == 0)
+            {
+                OnDied?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -67,17 +96,18 @@ namespace Components
 
             if (inputAxis.x != 0)
             {
-                newPositionX += inputAxis.x * _playerMoveSpeed * deltaTime;
+                newPositionX += inputAxis.x * _moveSpeed * deltaTime;
 
                 RotateModel(inputAxis.x > 0 ? Direction.Right : Direction.Left);
             }
 
             if (inputAxis.y != 0)
             {
-                newPositionY += inputAxis.y * _playerMoveSpeed * deltaTime;
+                newPositionY += inputAxis.y * _moveSpeed * deltaTime;
             }
 
-            newPositionX = Mathf.Clamp(newPositionX, -Constants.PlayerMoveHorizontalBorder, Constants.PlayerMoveHorizontalBorder);
+            newPositionX = Mathf.Clamp(newPositionX, -Constants.PlayerMoveHorizontalBorder,
+                Constants.PlayerMoveHorizontalBorder);
             newPositionY = Mathf.Clamp(newPositionY, Constants.PlayerMoveBottomBorder, Constants.PlayerMoveTopBorder);
 
             transform.position = new Vector3(newPositionX, newPositionY, 0f);
