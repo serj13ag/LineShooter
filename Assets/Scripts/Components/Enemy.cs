@@ -8,6 +8,8 @@ namespace Components
 {
     public class Enemy : MonoBehaviour, ITimeTickable
     {
+        [SerializeField] private SpriteFlashColorizer _spriteFlashColorizer;
+
         private ITimeService _timeService;
 
         private float _speed;
@@ -55,6 +57,8 @@ namespace Components
 
         private void OnHealthChanged(object sender, EventArgs e)
         {
+            _spriteFlashColorizer.Flash();
+
             if (HealthBlock.Health == 0)
             {
                 OnDied?.Invoke(this, EventArgs.Empty);
