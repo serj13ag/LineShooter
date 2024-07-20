@@ -17,7 +17,7 @@ MonoBehaviour:
   MaxNumberOfKilledEnemiesForWin: 12
   MinSpawnEnemyCooldownSeconds: 1
   MaxSpawnEnemyCooldownSeconds: 2
-  EnemyMaxHealth: 4
+  EnemyMaxHealth: 2
   MinEnemySpeed: 0.2
   MaxEnemySpeed: 0.6
   PlayerMaxHealth: 10

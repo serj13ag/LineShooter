@@ -26,10 +26,13 @@ namespace Services
 
         private readonly List<Enemy> _enemies = new List<Enemy>();
 
+        private string _levelCode;
+        private float _numberOfKilledEnemiesForWin;
         private float _minSpawnEnemyCooldownSeconds;
         private float _maxSpawnEnemyCooldownSeconds;
+
         private float _secondsTillSpawnEnemy;
-        private string _levelCode;
+        private int _numberOfKilledEnemies;
 
         public EnemyService(IStaticDataProvider staticDataProvider, IRandomService randomService,
             IGameFactory gameFactory, IEnemyFactory enemyFactory, ITimeService timeService)
@@ -50,6 +53,8 @@ namespace Services
             _levelCode = levelCode;
 
             var levelStaticData = _staticDataProvider.GetDataForLevel(_levelCode);
+
+            _numberOfKilledEnemiesForWin = _randomService.Range(levelStaticData.MixNumberOfKilledEnemiesForWin, levelStaticData.MaxNumberOfKilledEnemiesForWin);
 
             _minSpawnEnemyCooldownSeconds = levelStaticData.MinSpawnEnemyCooldownSeconds;
             _maxSpawnEnemyCooldownSeconds = levelStaticData.MaxSpawnEnemyCooldownSeconds;
@@ -106,7 +111,6 @@ namespace Services
         private void OnEnemyCrossedFinishLine(object sender, EventArgs e)
         {
             var enemy = (Enemy)sender;
-
             enemy.OnCrossedFinishLine -= OnEnemyCrossedFinishLine;
 
             _gameFactory.Player.HealthBlock.TakeDamage(Constants.EnemyDamage);
@@ -117,10 +121,17 @@ namespace Services
         private void OnEnemyDied(object sender, EventArgs e)
         {
             var enemy = (Enemy)sender;
-
             enemy.OnDied -= OnEnemyDied;
 
             DestroyEnemy(enemy);
+
+            _numberOfKilledEnemies++;
+
+            if (_numberOfKilledEnemies >= _numberOfKilledEnemiesForWin)
+            {
+                _timeService.SetGameSpeed(0);
+                Debug.LogWarning("Player win!"); // TODO show window
+            }
         }
 
         private void DestroyEnemy(Enemy enemy)
