@@ -96,6 +96,7 @@ namespace Services
             var enemy = _enemyFactory.SpawnEnemy(spawnLocation, _levelCode);
 
             enemy.OnCrossedFinishLine += OnEnemyCrossedFinishLine;
+            enemy.OnDied += OnEnemyDied;
 
             _enemies.Add(enemy);
 
@@ -106,8 +107,24 @@ namespace Services
         {
             var enemy = (Enemy)sender;
 
+            enemy.OnCrossedFinishLine -= OnEnemyCrossedFinishLine;
+
             _gameFactory.Player.TakeDamage(Constants.EnemyDamage);
 
+            DestroyEnemy(enemy);
+        }
+
+        private void OnEnemyDied(object sender, EventArgs e)
+        {
+            var enemy = (Enemy)sender;
+
+            enemy.OnDied -= OnEnemyDied;
+
+            DestroyEnemy(enemy);
+        }
+
+        private void DestroyEnemy(Enemy enemy)
+        {
             Object.Destroy(enemy.gameObject);
             _enemies.Remove(enemy);
         }

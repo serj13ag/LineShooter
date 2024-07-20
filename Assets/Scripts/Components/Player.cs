@@ -11,17 +11,21 @@ namespace Components
     {
         [SerializeField] private Transform _modelTransform;
 
-        public event EventHandler<EventArgs> OnDied;
-
         private IInputService _inputService;
         private ITimeService _timeService;
         private IEnemyService _enemyService;
 
         private float _moveSpeed;
+        private int _damage;
         private float _shootRange;
+        private float _shootCooldownSeconds;
+
         private int _health;
+        private float _timeTillShoot;
 
         private Direction _currentFacingDirection;
+
+        public event EventHandler<EventArgs> OnDied;
 
         private void Awake()
         {
@@ -44,7 +48,10 @@ namespace Components
             float projectileSpeed)
         {
             _moveSpeed = playerMoveSpeed;
+            _damage = damage;
             _shootRange = shootRange;
+            _shootCooldownSeconds = shootCooldownSeconds;
+
             _health = maxHealth;
 
             _currentFacingDirection = Direction.Left;
@@ -56,7 +63,17 @@ namespace Components
 
             if (_enemyService.TryGetNearestEnemy(transform.position, _shootRange, out var enemy))
             {
+                if (_timeTillShoot <= 0)
+                {
+                    ShootAtEnemy(enemy);
+                }
+
                 Debug.DrawLine(transform.position, enemy.transform.position, Color.green); // TODO targeting
+            }
+
+            if (_timeTillShoot > 0)
+            {
+                _timeTillShoot -= deltaTime;
             }
         }
 
@@ -80,6 +97,13 @@ namespace Components
             {
                 OnDied?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        private void ShootAtEnemy(Enemy nearestEnemy)
+        {
+            nearestEnemy.TakeDamage(_damage);
+            _timeTillShoot = _shootCooldownSeconds;
+            Debug.LogWarning("Shoot!"); // TODO spawn projectile
         }
 
         private void ProcessInput(float deltaTime)

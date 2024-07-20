@@ -8,11 +8,14 @@ namespace Components
 {
     public class Enemy : MonoBehaviour, ITimeTickable
     {
-        public event EventHandler<EventArgs> OnCrossedFinishLine;
-
         private ITimeService _timeService;
 
-        private float _enemySpeed;
+        private float _speed;
+
+        private int _health;
+
+        public event EventHandler<EventArgs> OnCrossedFinishLine;
+        public event EventHandler<EventArgs> OnDied;
 
         private void Awake()
         {
@@ -29,14 +32,16 @@ namespace Components
             _timeService.Unsubscribe(this);
         }
 
-        public void Init(int enemyMaxHealth, float enemySpeed)
+        public void Init(int maxHealth, float speed)
         {
-            _enemySpeed = enemySpeed;
+            _speed = speed;
+
+            _health = maxHealth;
         }
 
         public void TimeTick(float deltaTime)
         {
-            var newPositionY = transform.position.y - _enemySpeed * deltaTime;
+            var newPositionY = transform.position.y - _speed * deltaTime;
 
             transform.position = new Vector3(transform.position.x, newPositionY, transform.position.z);
 
@@ -44,6 +49,28 @@ namespace Components
             if (crossedFinishLine)
             {
                 OnCrossedFinishLine?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public void TakeDamage(int damage)
+        {
+            if (damage > _health)
+            {
+                damage = _health;
+            }
+
+            if (damage <= 0)
+            {
+                return;
+            }
+
+            _health -= damage;
+
+            // TODO update UI flash red
+
+            if (_health == 0)
+            {
+                OnDied?.Invoke(this, EventArgs.Empty);
             }
         }
     }
