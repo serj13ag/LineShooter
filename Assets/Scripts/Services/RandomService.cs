@@ -5,6 +5,7 @@ namespace Services
     public interface IRandomService : IService
     {
         int Range(int max);
+        float Range(float min, float max);
     }
 
     public class RandomService : IRandomService
@@ -19,6 +20,14 @@ namespace Services
         public int Range(int max)
         {
             return _random.Next(0, max);
+        }
+
+        public float Range(float min, float max)
+        {
+            double range = max - min;
+            var sample = _random.NextDouble();
+            var scaled = sample * range + min;
+            return (float)scaled;
         }
     }
 }
