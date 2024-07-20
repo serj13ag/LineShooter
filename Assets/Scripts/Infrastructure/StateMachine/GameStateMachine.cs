@@ -20,7 +20,9 @@ namespace Infrastructure.StateMachine
         {
             _states = new Dictionary<Type, IExitableGameState>()
             {
-                [typeof(GameplayLevelState)] = new GameplayLevelState(serviceLocator.Get<ISceneLoader>()),
+                [typeof(GameplayLevelState)] = new GameplayLevelState(
+                    serviceLocator.Get<ISceneLoader>(),
+                    serviceLocator.Get<IStaticDataProvider>()),
             };
         }
 

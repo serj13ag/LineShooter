@@ -21,8 +21,15 @@ namespace Infrastructure
 
         private void CreateServices(ServiceLocator serviceLocator)
         {
-            var sceneLoader = new SceneLoader(this);
-            serviceLocator.Register<ISceneLoader>(sceneLoader);
+            ISceneLoader sceneLoader = new SceneLoader(this);
+            serviceLocator.Register(sceneLoader);
+
+            IAssetProvider assetProvider = new AssetProvider();
+            serviceLocator.Register(assetProvider);
+
+            IStaticDataProvider staticDataProvider = new StaticDataProvider();
+            staticDataProvider.LoadData();
+            serviceLocator.Register(staticDataProvider);
         }
     }
 }
