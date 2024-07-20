@@ -14,7 +14,7 @@ namespace Components
 
         private float _speed;
 
-        public HealthBlock HealthBlock { get; private set; }
+        private HealthBlock _healthBlock;
 
         public event EventHandler<EventArgs> OnCrossedFinishLine;
         public event EventHandler<EventArgs> OnDied;
@@ -34,19 +34,27 @@ namespace Components
             _timeService.Unsubscribe(this);
         }
 
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (!other.gameObject.CompareTag(Constants.PlayerProjectileTag))
+            {
+                return;
+            }
+
+            CollideWithPlayerProjectile(other);
+        }
+
         public void Init(int maxHealth, float speed)
         {
             _speed = speed;
 
-            HealthBlock = new HealthBlock(maxHealth);
-            HealthBlock.OnHealthChanged += OnHealthChanged;
+            _healthBlock = new HealthBlock(maxHealth);
+            _healthBlock.OnHealthChanged += OnHealthChanged;
         }
 
         public void TimeTick(float deltaTime)
         {
-            var newPositionY = transform.position.y - _speed * deltaTime;
-
-            transform.position = new Vector3(transform.position.x, newPositionY, transform.position.z);
+            MoveDown(deltaTime);
 
             var crossedFinishLine = transform.position.y < Constants.PlayerMoveTopBorder;
             if (crossedFinishLine)
@@ -59,10 +67,23 @@ namespace Components
         {
             _spriteFlashColorizer.Flash();
 
-            if (HealthBlock.Health == 0)
+            if (_healthBlock.Health == 0)
             {
                 OnDied?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        private void CollideWithPlayerProjectile(Collider2D other)
+        {
+            var playerProjectile = other.GetComponent<PlayerProjectile>();
+            playerProjectile.OnCollideWithEnemy();
+            _healthBlock.TakeDamage(playerProjectile.Damage);
+        }
+
+        private void MoveDown(float deltaTime)
+        {
+            var newPositionY = transform.position.y - _speed * deltaTime;
+            transform.position = new Vector3(transform.position.x, newPositionY, transform.position.z);
         }
     }
 }

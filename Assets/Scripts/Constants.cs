@@ -6,6 +6,9 @@ public static class Constants
     public const string FirstLevelCode = "Level1";
     public const string GameplaySceneName = "GameplayScene";
 
+    public const string PlayerProjectileTag = "PlayerProjectile";
+    public const float ProjectileDestroyRange = 3f;
+
     // Resource Paths
     public const string LevelDataResourcesPath = "LevelStaticData";
     public const string PlayerPrefabResourcePath = "Player";

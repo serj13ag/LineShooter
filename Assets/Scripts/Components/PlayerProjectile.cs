@@ -7,13 +7,14 @@ namespace Components
 {
     public class PlayerProjectile : MonoBehaviour, ITimeTickable
     {
-        private const float HitDistanceTolerance = 0.1f;
+        [SerializeField] private float _rotationSpeed;
 
         private ITimeService _timeService;
 
-        private Enemy _targetEnemy;
         private float _speed;
-        private int _damage;
+        private Vector3 _direction;
+
+        public int Damage { get; private set; }
 
         private void Awake()
         {
@@ -32,36 +33,39 @@ namespace Components
 
         public void Init(Enemy targetEnemy, float speed, int damage)
         {
-            _targetEnemy = targetEnemy;
             _speed = speed;
-            _damage = damage;
+            Damage = damage;
+
+            _direction = (targetEnemy.transform.position - transform.position).normalized;
         }
 
         public void TimeTick(float deltaTime)
         {
-            if (_targetEnemy == null)
+            Move(deltaTime);
+            Rotate(deltaTime);
+
+            var inDestroyRange = Mathf.Abs(transform.position.x) > Constants.ProjectileDestroyRange
+                                 || Mathf.Abs(transform.position.y) > Constants.ProjectileDestroyRange;
+            if (inDestroyRange)
             {
                 DestroyProjectile();
-                return;
             }
-
-            var closeToEnemy = Vector3.Distance(transform.position, _targetEnemy.transform.position) < HitDistanceTolerance;
-            if (closeToEnemy)
-            {
-                _targetEnemy.HealthBlock.TakeDamage(_damage);
-                DestroyProjectile();
-                return;
-            }
-
-            MoveTowardsEnemy(deltaTime);
         }
 
-        private void MoveTowardsEnemy(float deltaTime)
+        private void Move(float deltaTime)
         {
-            var directionToTarget = _targetEnemy.transform.position - transform.position;
-            directionToTarget.Normalize();
+            transform.position += _direction * (_speed * deltaTime);
+        }
 
-            transform.position += directionToTarget * (_speed * deltaTime);
+        private void Rotate(float deltaTime)
+        {
+            var rotationAmount = _rotationSpeed * deltaTime;
+            transform.Rotate(0f, 0f, rotationAmount);
+        }
+
+        public void OnCollideWithEnemy()
+        {
+            DestroyProjectile();
         }
 
         private void DestroyProjectile()
