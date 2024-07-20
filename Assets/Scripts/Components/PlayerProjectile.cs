@@ -1,3 +1,4 @@
+using Enums;
 using Infrastructure;
 using Interfaces;
 using Services;
@@ -11,8 +12,9 @@ namespace Components
 
         private ITimeService _timeService;
 
-        private float _speed;
         private Vector3 _direction;
+        private Direction _rotationDirection;
+        private float _speed;
 
         public int Damage { get; private set; }
 
@@ -31,10 +33,11 @@ namespace Components
             _timeService.Unsubscribe(this);
         }
 
-        public void Init(Vector3 direction, float speed, int damage)
+        public void Init(Vector3 direction, Direction rotationDirection, float speed, int damage)
         {
-            _speed = speed;
             _direction = direction;
+            _rotationDirection = rotationDirection;
+            _speed = speed;
 
             Damage = damage;
         }
@@ -60,7 +63,7 @@ namespace Components
         private void Rotate(float deltaTime)
         {
             var rotationAmount = _rotationSpeed * deltaTime;
-            transform.Rotate(0f, 0f, rotationAmount);
+            transform.Rotate(0f, 0f, _rotationDirection == Direction.Left ? rotationAmount : -rotationAmount);
         }
 
         public void OnCollideWithEnemy()

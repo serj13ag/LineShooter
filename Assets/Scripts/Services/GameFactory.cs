@@ -1,4 +1,5 @@
 using Components;
+using Enums;
 using UnityEngine;
 
 namespace Services
@@ -8,7 +9,8 @@ namespace Services
         Player Player { get; }
 
         Player SpawnPlayer(Vector2 location, string levelCode);
-        void SpawnProjectile(Vector3 location, Vector3 direction, float speed, int damage);
+        void SpawnProjectile(Vector3 location, Quaternion rotation, Direction rotationDirection, Vector3 direction,
+            float speed, int damage);
     }
 
     public class GameFactory : IGameFactory
@@ -37,10 +39,11 @@ namespace Services
             return Player;
         }
 
-        public void SpawnProjectile(Vector3 location, Vector3 direction, float speed, int damage)
+        public void SpawnProjectile(Vector3 location, Quaternion rotation, Direction rotationDirection, Vector3 direction,
+            float speed, int damage)
         {
-            var projectile = _assetProvider.Instantiate<PlayerProjectile>(Constants.PlayerProjectileResourcePath, location);
-            projectile.Init(direction, speed, damage);
+            var projectile = _assetProvider.Instantiate<PlayerProjectile>(Constants.PlayerProjectileResourcePath, location, rotation);
+            projectile.Init(direction, rotationDirection, speed, damage);
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Components
         private static readonly int AttackAnimatorTrigger = Animator.StringToHash("Attack");
 
         [SerializeField] private Transform _modelTransform;
+        [SerializeField] private Transform _weaponTransform;
         [SerializeField] private Animator _animator;
         [SerializeField] private float _minAttackAnimationSpeed;
 
@@ -80,7 +81,7 @@ namespace Components
 
         public void Shoot()
         {
-            _gameFactory.SpawnProjectile(transform.position, _shootDirection, _projectileSpeed, _damage);
+            _gameFactory.SpawnProjectile(_weaponTransform.position, _weaponTransform.rotation, _currentFacingDirection, _shootDirection, _projectileSpeed, _damage);
         }
 
         private void OnHealthChanged(object sender, EventArgs e)
