@@ -8,8 +8,8 @@ namespace Services
     {
         Player Player { get; }
 
-        Player SpawnPlayer(Vector2 location, string levelCode);
-        void SpawnProjectile(Vector3 location, Quaternion rotation, Direction rotationDirection, Vector3 direction,
+        Player SpawnPlayer(Vector2 position, string levelCode);
+        void SpawnProjectile(Vector3 position, Quaternion rotation, Direction rotationDirection, Vector3 direction,
             float speed, int damage);
     }
 
@@ -26,9 +26,9 @@ namespace Services
             _staticDataProvider = staticDataProvider;
         }
 
-        public Player SpawnPlayer(Vector2 location, string levelCode)
+        public Player SpawnPlayer(Vector2 position, string levelCode)
         {
-            Player = _assetProvider.Instantiate<Player>(Constants.PlayerPrefabResourcePath, location);
+            Player = _assetProvider.Instantiate<Player>(Constants.PlayerPrefabResourcePath, position);
 
             var levelStaticData = _staticDataProvider.GetDataForLevel(levelCode);
 
@@ -39,10 +39,10 @@ namespace Services
             return Player;
         }
 
-        public void SpawnProjectile(Vector3 location, Quaternion rotation, Direction rotationDirection, Vector3 direction,
+        public void SpawnProjectile(Vector3 position, Quaternion rotation, Direction rotationDirection, Vector3 direction,
             float speed, int damage)
         {
-            var projectile = _assetProvider.Instantiate<PlayerProjectile>(Constants.PlayerProjectileResourcePath, location, rotation);
+            var projectile = _assetProvider.Instantiate<PlayerProjectile>(Constants.PlayerProjectileResourcePath, position, rotation);
             projectile.Init(direction, rotationDirection, speed, damage);
         }
     }

@@ -5,7 +5,7 @@ namespace Services
 {
     public interface IEnemyFactory : IService
     {
-        Enemy SpawnEnemy(Vector2 location, string levelCode);
+        Enemy SpawnEnemy(Vector2 position, string levelCode);
     }
 
     public class EnemyFactory : IEnemyFactory
@@ -22,9 +22,9 @@ namespace Services
             _staticDataProvider = staticDataProvider;
         }
 
-        public Enemy SpawnEnemy(Vector2 location, string levelCode)
+        public Enemy SpawnEnemy(Vector2 position, string levelCode)
         {
-            var enemy = _assetProvider.Instantiate<Enemy>(Constants.EnemyPrefabResourcePath, location);
+            var enemy = _assetProvider.Instantiate<Enemy>(Constants.EnemyPrefabResourcePath, position);
 
             var levelStaticData = _staticDataProvider.GetDataForLevel(levelCode);
 
