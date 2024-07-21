@@ -29,11 +29,6 @@ namespace Components
             _timeService.Subscribe(this);
         }
 
-        private void OnDisable()
-        {
-            _timeService.Unsubscribe(this);
-        }
-
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!other.gameObject.CompareTag(Constants.PlayerProjectileTag))
@@ -84,6 +79,16 @@ namespace Components
         {
             var newPositionY = transform.position.y - _speed * deltaTime;
             transform.position = new Vector3(transform.position.x, newPositionY, transform.position.z);
+        }
+
+        private void OnDisable()
+        {
+            _timeService.Unsubscribe(this);
+        }
+
+        private void OnDestroy()
+        {
+            _healthBlock.OnHealthChanged -= OnHealthChanged;
         }
     }
 }

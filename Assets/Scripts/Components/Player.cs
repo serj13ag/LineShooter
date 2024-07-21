@@ -50,11 +50,6 @@ namespace Components
             _timeService.Subscribe(this);
         }
 
-        private void OnDisable()
-        {
-            _timeService.Unsubscribe(this);
-        }
-
         public void Init(int maxHealth, int damage, float playerMoveSpeed, float shootRange, float shootCooldownSeconds,
             float projectileSpeed)
         {
@@ -163,6 +158,16 @@ namespace Components
         {
             var multiplier = 1f / shootCooldownSeconds;
             return Mathf.Max(multiplier, _minAttackAnimationSpeed);
+        }
+
+        private void OnDisable()
+        {
+            _timeService.Unsubscribe(this);
+        }
+
+        private void OnDestroy()
+        {
+            HealthBlock.OnHealthChanged -= OnHealthChanged;
         }
     }
 }

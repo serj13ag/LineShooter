@@ -28,11 +28,6 @@ namespace Components
             _timeService.Subscribe(this);
         }
 
-        private void OnDisable()
-        {
-            _timeService.Unsubscribe(this);
-        }
-
         public void Init(Vector3 direction, Direction rotationDirection, float speed, int damage)
         {
             _direction = direction;
@@ -74,6 +69,11 @@ namespace Components
         private void DestroyProjectile()
         {
             Destroy(gameObject);
+        }
+
+        private void OnDisable()
+        {
+            _timeService.Unsubscribe(this);
         }
     }
 }
