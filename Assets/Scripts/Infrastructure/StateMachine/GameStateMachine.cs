@@ -25,7 +25,8 @@ namespace Infrastructure.StateMachine
                     serviceLocator.Get<IUiFactory>(),
                     serviceLocator.Get<IGameFactory>(),
                     serviceLocator.Get<IEnemyService>(),
-                    serviceLocator.Get<ITimeService>()),
+                    serviceLocator.Get<ITimeService>(),
+                    serviceLocator.Get<IWindowService>()),
             };
         }
 

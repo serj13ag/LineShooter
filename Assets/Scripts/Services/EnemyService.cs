@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Components;
+using Enums;
 using Interfaces;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -21,6 +22,7 @@ namespace Services
         private readonly IGameFactory _gameFactory;
         private readonly IEnemyFactory _enemyFactory;
         private readonly ITimeService _timeService;
+        private readonly IWindowService _windowService;
 
         private readonly List<Vector2> _spawnLocations;
 
@@ -35,13 +37,15 @@ namespace Services
         private int _numberOfKilledEnemies;
 
         public EnemyService(IStaticDataProvider staticDataProvider, IRandomService randomService,
-            IGameFactory gameFactory, IEnemyFactory enemyFactory, ITimeService timeService)
+            IGameFactory gameFactory, IEnemyFactory enemyFactory, ITimeService timeService,
+            IWindowService windowService)
         {
             _staticDataProvider = staticDataProvider;
             _randomService = randomService;
             _gameFactory = gameFactory;
             _enemyFactory = enemyFactory;
             _timeService = timeService;
+            _windowService = windowService;
 
             _spawnLocations = Constants.EnemySpawnLocations;
         }
@@ -129,8 +133,8 @@ namespace Services
 
             if (_numberOfKilledEnemies >= _numberOfKilledEnemiesForWin)
             {
-                _timeService.SetGameSpeed(0);
-                Debug.LogWarning("Player win!"); // TODO show window
+                _timeService.SetGameSpeed(0); // TODO move to service
+                _windowService.ShowEndGameWindow(WindowType.Win);
             }
         }
 

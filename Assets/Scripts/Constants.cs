@@ -10,11 +10,15 @@ public static class Constants
     public const float ProjectileDestroyRange = 3f;
 
     public const string HealthLocale = "Health";
+    public const string WinLocale = "Win";
+    public const string LoseLocale = "Lose";
+    public const string RestartLocale = "Restart";
 
     // Resource Paths
     public const string LevelDataResourcesPath = "LevelStaticData";
     public const string UiRootResourcePath = "UiRoot";
     public const string UiHudResourcePath = "UiHud";
+    public const string UiEndGameWindowResourcePath = "UiEndGameWindow";
     public const string PlayerPrefabResourcePath = "Player";
     public const string PlayerProjectileResourcePath = "PlayerProjectile";
     public const string EnemyPrefabResourcePath = "GiantBeetle";

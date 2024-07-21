@@ -1,4 +1,5 @@
 using Components;
+using Enums;
 using Ui;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace Services
     {
         void CreateUiRoot();
         void CreateHud(Player player);
+        void CreateEndGameWindow(WindowType windowType);
     }
 
     public class UiFactory : IUiFactory
@@ -33,6 +35,12 @@ namespace Services
         {
             var hud = _assetProvider.Instantiate<GameObject>(Constants.UiHudResourcePath, _uiRootTransform);
             hud.GetComponentInChildren<UiHealthBar>().Init(player.HealthBlock);
+        }
+
+        public void CreateEndGameWindow(WindowType windowType)
+        {
+            var endGameWindow = _assetProvider.Instantiate<UiEndGameWindow>(Constants.UiEndGameWindowResourcePath, _uiRootTransform);
+            endGameWindow.Init(windowType);
         }
     }
 }

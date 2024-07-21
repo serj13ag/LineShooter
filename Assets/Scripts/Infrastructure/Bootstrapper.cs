@@ -62,12 +62,16 @@ namespace Infrastructure
                 serviceLocator.Get<IStaticDataProvider>());
             serviceLocator.Register(enemyFactory);
 
+            IWindowService windowService = new WindowService(serviceLocator.Get<IUiFactory>());
+            serviceLocator.Register(windowService);
+
             IEnemyService enemyService = new EnemyService(
                 serviceLocator.Get<IStaticDataProvider>(),
                 serviceLocator.Get<IRandomService>(),
                 serviceLocator.Get<IGameFactory>(),
                 serviceLocator.Get<IEnemyFactory>(),
-                serviceLocator.Get<ITimeService>());
+                serviceLocator.Get<ITimeService>(),
+                serviceLocator.Get<IWindowService>());
             serviceLocator.Register(enemyService);
         }
     }

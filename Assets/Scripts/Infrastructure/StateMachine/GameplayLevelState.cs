@@ -1,7 +1,7 @@
 using System;
 using Components;
+using Enums;
 using Services;
-using UnityEngine;
 
 namespace Infrastructure.StateMachine
 {
@@ -12,17 +12,19 @@ namespace Infrastructure.StateMachine
         private readonly IGameFactory _gameFactory;
         private readonly IEnemyService _enemyService;
         private readonly ITimeService _timeService;
+        private readonly IWindowService _windowService;
 
         private string _levelCode;
 
         public GameplayLevelState(ISceneLoader sceneLoader, IUiFactory uiFactory, IGameFactory gameFactory,
-            IEnemyService enemyService, ITimeService timeService)
+            IEnemyService enemyService, ITimeService timeService, IWindowService windowService)
         {
             _sceneLoader = sceneLoader;
             _uiFactory = uiFactory;
             _gameFactory = gameFactory;
             _enemyService = enemyService;
             _timeService = timeService;
+            _windowService = windowService;
         }
 
         public void Enter(string levelCode)
@@ -52,8 +54,8 @@ namespace Infrastructure.StateMachine
         {
             var player = (Player)sender;
 
-            _timeService.SetGameSpeed(0);
-            Debug.LogWarning("Player died!"); // TODO show window
+            _timeService.SetGameSpeed(0); // TODO move to service
+            _windowService.ShowEndGameWindow(WindowType.Lose);
 
             player.OnDied -= OnPlayerDied;
         }

@@ -429,8 +429,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5524751341712859979}
+  - component: {fileID: 5690170645709181850}
   m_Layer: 5
-  m_Name: GameEndWindow
+  m_Name: UiEndGameWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -459,6 +460,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 731.6, y: 882.5}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5690170645709181850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7813177040376803128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0630084276a24f49bdcb93c1a2a39201, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _titleText: {fileID: 8701367425274967599}
+  _restartButton: {fileID: 4089030827253508238}
+  _restartButtonText: {fileID: 9171562918208800622}
 --- !u!1 &8543026414235939305
 GameObject:
   m_ObjectHideFlags: 0
