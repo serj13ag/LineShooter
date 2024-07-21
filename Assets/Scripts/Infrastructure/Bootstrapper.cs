@@ -48,6 +48,9 @@ namespace Infrastructure
             IInputService inputService = new InputService();
             serviceLocator.Register(inputService);
 
+            IUiFactory uiFactory = new UiFactory(serviceLocator.Get<IAssetProvider>());
+            serviceLocator.Register(uiFactory);
+
             IGameFactory gameFactory = new GameFactory(
                 serviceLocator.Get<IAssetProvider>(),
                 serviceLocator.Get<IStaticDataProvider>());

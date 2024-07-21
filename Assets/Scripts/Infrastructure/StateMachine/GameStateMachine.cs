@@ -22,7 +22,7 @@ namespace Infrastructure.StateMachine
             {
                 [typeof(GameplayLevelState)] = new GameplayLevelState(
                     serviceLocator.Get<ISceneLoader>(),
-                    serviceLocator.Get<IStaticDataProvider>(),
+                    serviceLocator.Get<IUiFactory>(),
                     serviceLocator.Get<IGameFactory>(),
                     serviceLocator.Get<IEnemyService>(),
                     serviceLocator.Get<ITimeService>()),

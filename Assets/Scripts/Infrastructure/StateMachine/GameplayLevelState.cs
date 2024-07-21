@@ -8,18 +8,18 @@ namespace Infrastructure.StateMachine
     public class GameplayLevelState : IPayloadedGameState<string>
     {
         private readonly ISceneLoader _sceneLoader;
-        private readonly IStaticDataProvider _staticDataProvider;
+        private readonly IUiFactory _uiFactory;
         private readonly IGameFactory _gameFactory;
         private readonly IEnemyService _enemyService;
         private readonly ITimeService _timeService;
 
         private string _levelCode;
 
-        public GameplayLevelState(ISceneLoader sceneLoader, IStaticDataProvider staticDataProvider,
-            IGameFactory gameFactory, IEnemyService enemyService, ITimeService timeService)
+        public GameplayLevelState(ISceneLoader sceneLoader, IUiFactory uiFactory, IGameFactory gameFactory,
+            IEnemyService enemyService, ITimeService timeService)
         {
             _sceneLoader = sceneLoader;
-            _staticDataProvider = staticDataProvider;
+            _uiFactory = uiFactory;
             _gameFactory = gameFactory;
             _enemyService = enemyService;
             _timeService = timeService;
@@ -38,11 +38,12 @@ namespace Infrastructure.StateMachine
 
         private void OnSceneLoaded()
         {
-            var levelStaticData = _staticDataProvider.GetDataForLevel(_levelCode); // TODO remove
+            _uiFactory.CreateUiRoot();
 
             var player = _gameFactory.SpawnPlayer(Constants.PlayerSpawnLocation, _levelCode);
-
             player.OnDied += OnPlayerDied;
+
+            _uiFactory.CreateHud(player);
 
             _enemyService.StartSpawnEnemies(_levelCode);
         }

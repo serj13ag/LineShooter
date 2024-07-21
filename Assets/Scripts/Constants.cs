@@ -9,8 +9,12 @@ public static class Constants
     public const string PlayerProjectileTag = "PlayerProjectile";
     public const float ProjectileDestroyRange = 3f;
 
+    public const string HealthLocale = "Health";
+
     // Resource Paths
     public const string LevelDataResourcesPath = "LevelStaticData";
+    public const string UiRootResourcePath = "UiRoot";
+    public const string UiHudResourcePath = "UiHud";
     public const string PlayerPrefabResourcePath = "Player";
     public const string PlayerProjectileResourcePath = "PlayerProjectile";
     public const string EnemyPrefabResourcePath = "GiantBeetle";
@@ -24,6 +28,7 @@ public static class Constants
 
     // Enemy Settings
     public const int EnemyDamage = 1;
+
     public static readonly List<Vector2> EnemySpawnLocations = new List<Vector2>()
     {
         new Vector2(-1f, 3.5f),
