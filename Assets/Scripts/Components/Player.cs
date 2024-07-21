@@ -9,13 +9,9 @@ namespace Components
 {
     public class Player : MonoBehaviour, ITimeTickable
     {
-        private static readonly int AttackSpeedMultiplierAnimatorFloat = Animator.StringToHash("AttackSpeedMultiplier");
-        private static readonly int AttackAnimatorTrigger = Animator.StringToHash("Attack");
-
         [SerializeField] private Transform _modelTransform;
         [SerializeField] private Transform _weaponTransform;
-        [SerializeField] private Animator _animator;
-        [SerializeField] private float _minAttackAnimationSpeed;
+        [SerializeField] private PlayerAnimator _playerAnimator;
 
         private IInputService _inputService;
         private ITimeService _timeService;
@@ -59,13 +55,12 @@ namespace Components
             _shootCooldownSeconds = shootCooldownSeconds;
             _projectileSpeed = projectileSpeed;
 
+            _playerAnimator.Init(shootCooldownSeconds);
+
             HealthBlock = new HealthBlock(maxHealth);
             HealthBlock.OnHealthChanged += OnHealthChanged;
 
             _currentFacingDirection = Direction.Left;
-
-            _animator.SetFloat(AttackSpeedMultiplierAnimatorFloat,
-                GetAttackSpeedAnimatorMultiplier(shootCooldownSeconds));
         }
 
         public void TimeTick(float deltaTime)
@@ -138,7 +133,7 @@ namespace Components
         private void StartShoot(Vector3 targetPosition)
         {
             _shootDirection = (targetPosition - transform.position).normalized;
-            _animator.SetTrigger(AttackAnimatorTrigger);
+            _playerAnimator.PlayAttack();
             _timeTillShoot = _shootCooldownSeconds;
         }
 
@@ -153,12 +148,6 @@ namespace Components
 
             _modelTransform.localScale = new Vector3(-_modelTransform.localScale.x, _modelTransform.localScale.y,
                 _modelTransform.localScale.z);
-        }
-
-        private float GetAttackSpeedAnimatorMultiplier(float shootCooldownSeconds)
-        {
-            var multiplier = 1f / shootCooldownSeconds;
-            return Mathf.Max(multiplier, _minAttackAnimationSpeed);
         }
 
         private void OnDisable()
