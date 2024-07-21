@@ -1,5 +1,7 @@
 using System;
 using Enums;
+using Infrastructure;
+using Infrastructure.StateMachine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +14,13 @@ namespace Ui
 
         [SerializeField] private Button _restartButton;
         [SerializeField] private TMP_Text _restartButtonText;
+
+        private IGameStateMachine _gameStateMachine;
+
+        private void Awake()
+        {
+            _gameStateMachine = ServiceLocator.Instance.Get<IGameStateMachine>();
+        }
 
         private void OnEnable()
         {
@@ -27,7 +36,7 @@ namespace Ui
 
         private void OnRestartButtonClicked()
         {
-            // TODO restart game
+            _gameStateMachine.Enter<GameplayLevelState, string>(Constants.FirstLevelCode);
         }
 
         private void UpdateTitle(WindowType windowType)

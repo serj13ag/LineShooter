@@ -21,11 +21,10 @@ namespace Infrastructure.StateMachine
             _states = new Dictionary<Type, IExitableGameState>()
             {
                 [typeof(GameplayLevelState)] = new GameplayLevelState(
+                    serviceLocator,
                     serviceLocator.Get<ISceneLoader>(),
                     serviceLocator.Get<IUiFactory>(),
-                    serviceLocator.Get<IGameFactory>(),
-                    serviceLocator.Get<IEnemyService>(),
-                    serviceLocator.Get<IGameplayLevelEndTracker>()),
+                    serviceLocator.Get<ITimeService>()),
             };
         }
 

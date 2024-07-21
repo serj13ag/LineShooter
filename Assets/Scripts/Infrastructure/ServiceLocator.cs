@@ -24,5 +24,17 @@ namespace Infrastructure
         {
             return (TService)_services[typeof(TService)];
         }
+
+        public void Remove<TService>() where TService : IService
+        {
+            var serviceToRemove = _services[typeof(TService)];
+
+            if (serviceToRemove is IDisposable disposableService)
+            {
+                disposableService.Dispose();
+            }
+
+            _services.Remove(typeof(TService));
+        }
     }
 }

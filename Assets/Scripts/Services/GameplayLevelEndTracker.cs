@@ -1,13 +1,12 @@
-using System;
-using Components;
 using Enums;
 
 namespace Services
 {
     public interface IGameplayLevelEndTracker : IService
     {
-        void StartTracking(string levelCode, Player player);
+        void StartTracking(string levelCode);
         void EnemyKilled();
+        void PlayerDied();
     }
 
     public class GameplayLevelEndTracker : IGameplayLevelEndTracker
@@ -29,14 +28,12 @@ namespace Services
             _windowService = windowService;
         }
 
-        public void StartTracking(string levelCode, Player player)
+        public void StartTracking(string levelCode)
         {
             var levelStaticData = _staticDataProvider.GetDataForLevel(levelCode);
 
             _numberOfKilledEnemiesForWin = _randomService.Range(levelStaticData.MixNumberOfKilledEnemiesForWin,
                 levelStaticData.MaxNumberOfKilledEnemiesForWin);
-
-            player.OnDied += OnPlayerDied;
         }
 
         public void EnemyKilled()
@@ -50,14 +47,10 @@ namespace Services
             }
         }
 
-        private void OnPlayerDied(object sender, EventArgs e)
+        public void PlayerDied()
         {
-            var player = (Player)sender;
-
             StopGameSpeed();
             _windowService.ShowEndGameWindow(WindowType.Lose);
-
-            player.OnDied -= OnPlayerDied;
         }
 
         private void StopGameSpeed()

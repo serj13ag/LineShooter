@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 
 namespace Services
 {
-    public interface IEnemyService : IService, ITimeTickable
+    public interface IEnemyService : IService, ITimeTickable, IDisposable
     {
         void StartSpawnEnemies(string levelCode);
 
@@ -50,7 +50,7 @@ namespace Services
 
         public void StartSpawnEnemies(string levelCode)
         {
-            _timeService.Subscribe(this); // TODO unsubscribe
+            _timeService.Subscribe(this);
 
             _levelCode = levelCode;
 
@@ -142,6 +142,19 @@ namespace Services
         private float GetRandomSpawnEnemyCooldownSeconds()
         {
             return _randomService.Range(_minSpawnEnemyCooldownSeconds, _maxSpawnEnemyCooldownSeconds);
+        }
+
+        public void Dispose()
+        {
+            foreach (var enemy in _enemies.ToArray())
+            {
+                enemy.OnCrossedFinishLine -= OnEnemyCrossedFinishLine;
+                enemy.OnDied -= OnEnemyDied;
+
+                DestroyEnemy(enemy);
+            }
+
+            _timeService.Unsubscribe(this);
         }
     }
 }

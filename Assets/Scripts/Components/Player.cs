@@ -21,6 +21,7 @@ namespace Components
         private ITimeService _timeService;
         private IEnemyService _enemyService;
         private IGameFactory _gameFactory;
+        private IGameplayLevelEndTracker _gameplayLevelEndTracker;
 
         private float _moveSpeed;
         private int _damage;
@@ -35,14 +36,13 @@ namespace Components
 
         public HealthBlock HealthBlock { get; private set; }
 
-        public event EventHandler<EventArgs> OnDied;
-
         private void Awake()
         {
             _inputService = ServiceLocator.Instance.Get<IInputService>();
             _timeService = ServiceLocator.Instance.Get<ITimeService>();
             _enemyService = ServiceLocator.Instance.Get<IEnemyService>();
             _gameFactory = ServiceLocator.Instance.Get<IGameFactory>();
+            _gameplayLevelEndTracker = ServiceLocator.Instance.Get<IGameplayLevelEndTracker>();
         }
 
         private void OnEnable()
@@ -76,14 +76,15 @@ namespace Components
 
         public void Shoot()
         {
-            _gameFactory.SpawnProjectile(_weaponTransform.position, _weaponTransform.rotation, _currentFacingDirection, _shootDirection, _projectileSpeed, _damage);
+            _gameFactory.SpawnProjectile(_weaponTransform.position, _weaponTransform.rotation, _currentFacingDirection,
+                _shootDirection, _projectileSpeed, _damage);
         }
 
         private void OnHealthChanged(object sender, EventArgs e)
         {
             if (HealthBlock.Health == 0)
             {
-                OnDied?.Invoke(this, EventArgs.Empty);
+                _gameplayLevelEndTracker.PlayerDied();
             }
         }
 
