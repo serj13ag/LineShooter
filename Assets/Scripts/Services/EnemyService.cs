@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Components;
-using Enums;
 using Interfaces;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -22,14 +21,13 @@ namespace Services
         private readonly IGameFactory _gameFactory;
         private readonly IEnemyFactory _enemyFactory;
         private readonly ITimeService _timeService;
-        private readonly IWindowService _windowService;
+        private readonly IGameplayLevelEndTracker _gameplayLevelEndTracker;
 
         private readonly List<Vector2> _spawnLocations;
 
         private readonly List<Enemy> _enemies = new List<Enemy>();
 
         private string _levelCode;
-        private float _numberOfKilledEnemiesForWin;
         private float _minSpawnEnemyCooldownSeconds;
         private float _maxSpawnEnemyCooldownSeconds;
 
@@ -38,14 +36,14 @@ namespace Services
 
         public EnemyService(IStaticDataProvider staticDataProvider, IRandomService randomService,
             IGameFactory gameFactory, IEnemyFactory enemyFactory, ITimeService timeService,
-            IWindowService windowService)
+            IGameplayLevelEndTracker gameplayLevelEndTracker)
         {
             _staticDataProvider = staticDataProvider;
             _randomService = randomService;
             _gameFactory = gameFactory;
             _enemyFactory = enemyFactory;
             _timeService = timeService;
-            _windowService = windowService;
+            _gameplayLevelEndTracker = gameplayLevelEndTracker;
 
             _spawnLocations = Constants.EnemySpawnLocations;
         }
@@ -57,8 +55,6 @@ namespace Services
             _levelCode = levelCode;
 
             var levelStaticData = _staticDataProvider.GetDataForLevel(_levelCode);
-
-            _numberOfKilledEnemiesForWin = _randomService.Range(levelStaticData.MixNumberOfKilledEnemiesForWin, levelStaticData.MaxNumberOfKilledEnemiesForWin);
 
             _minSpawnEnemyCooldownSeconds = levelStaticData.MinSpawnEnemyCooldownSeconds;
             _maxSpawnEnemyCooldownSeconds = levelStaticData.MaxSpawnEnemyCooldownSeconds;
@@ -129,13 +125,7 @@ namespace Services
 
             DestroyEnemy(enemy);
 
-            _numberOfKilledEnemies++;
-
-            if (_numberOfKilledEnemies >= _numberOfKilledEnemiesForWin)
-            {
-                _timeService.SetGameSpeed(0); // TODO move to service
-                _windowService.ShowEndGameWindow(WindowType.Win);
-            }
+            _gameplayLevelEndTracker.EnemyKilled();
         }
 
         private void DestroyEnemy(Enemy enemy)

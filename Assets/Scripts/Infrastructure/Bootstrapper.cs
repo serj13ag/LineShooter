@@ -42,11 +42,18 @@ namespace Infrastructure
             staticDataProvider.LoadData();
             serviceLocator.Register(staticDataProvider);
 
+            IInputService inputService = new InputService();
+            serviceLocator.Register(inputService);
+
             ITimeService timeService = new TimeService();
             serviceLocator.Register(timeService);
 
-            IInputService inputService = new InputService();
-            serviceLocator.Register(inputService);
+            IGameplayLevelEndTracker gameEndTracker = new GameplayLevelEndTracker(
+                serviceLocator.Get<IRandomService>(),
+                serviceLocator.Get<IStaticDataProvider>(),
+                serviceLocator.Get<ITimeService>(),
+                serviceLocator.Get<IWindowService>());
+            serviceLocator.Register(gameEndTracker);
 
             IUiFactory uiFactory = new UiFactory(serviceLocator.Get<IAssetProvider>());
             serviceLocator.Register(uiFactory);
@@ -71,7 +78,7 @@ namespace Infrastructure
                 serviceLocator.Get<IGameFactory>(),
                 serviceLocator.Get<IEnemyFactory>(),
                 serviceLocator.Get<ITimeService>(),
-                serviceLocator.Get<IWindowService>());
+                serviceLocator.Get<IGameplayLevelEndTracker>());
             serviceLocator.Register(enemyService);
         }
     }
