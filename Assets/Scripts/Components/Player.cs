@@ -30,6 +30,8 @@ namespace Components
 
         private Direction _currentFacingDirection;
 
+        private PlayerMover _playerMover;
+
         public HealthBlock HealthBlock { get; private set; }
 
         private void Awake()
@@ -57,6 +59,8 @@ namespace Components
 
             _playerAnimator.Init(shootCooldownSeconds);
 
+            _playerMover = new PlayerMover(this, _moveSpeed, _inputService);
+
             HealthBlock = new HealthBlock(maxHealth);
             HealthBlock.OnHealthChanged += OnHealthChanged;
 
@@ -65,7 +69,7 @@ namespace Components
 
         public void TimeTick(float deltaTime)
         {
-            ProcessInput(deltaTime);
+            _playerMover.TimeTick(deltaTime);
             ProcessShooting(deltaTime);
         }
 
@@ -75,43 +79,17 @@ namespace Components
                 _shootDirection, _projectileSpeed, _damage);
         }
 
+        public void OnReceiveInputX(float inputValue)
+        {
+            RotateModel(inputValue > 0 ? Direction.Right : Direction.Left);
+        }
+
         private void OnHealthChanged(object sender, EventArgs e)
         {
             if (HealthBlock.Health == 0)
             {
                 _gameplayLevelEndTracker.PlayerDied();
             }
-        }
-
-        private void ProcessInput(float deltaTime)
-        {
-            var inputAxis = _inputService.Axis;
-
-            if (inputAxis.magnitude == 0)
-            {
-                return;
-            }
-
-            var newPositionX = transform.position.x;
-            var newPositionY = transform.position.y;
-
-            if (inputAxis.x != 0)
-            {
-                newPositionX += inputAxis.x * _moveSpeed * deltaTime;
-
-                RotateModel(inputAxis.x > 0 ? Direction.Right : Direction.Left);
-            }
-
-            if (inputAxis.y != 0)
-            {
-                newPositionY += inputAxis.y * _moveSpeed * deltaTime;
-            }
-
-            newPositionX = Mathf.Clamp(newPositionX, -Constants.PlayerMoveHorizontalBorder,
-                Constants.PlayerMoveHorizontalBorder);
-            newPositionY = Mathf.Clamp(newPositionY, Constants.PlayerMoveBottomBorder, Constants.PlayerMoveTopBorder);
-
-            transform.position = new Vector3(newPositionX, newPositionY, 0f);
         }
 
         private void ProcessShooting(float deltaTime)
