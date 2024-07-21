@@ -10,8 +10,8 @@ namespace Components
     public class Player : MonoBehaviour, ITimeTickable
     {
         [SerializeField] private Transform _modelTransform;
-        [SerializeField] private Transform _weaponTransform;
         [SerializeField] private PlayerAnimator _playerAnimator;
+        [SerializeField] private PlayerShootBlock _playerShootBlock;
 
         private IInputService _inputService;
         private ITimeService _timeService;
@@ -20,13 +20,6 @@ namespace Components
         private IGameplayLevelEndTracker _gameplayLevelEndTracker;
 
         private float _moveSpeed;
-        private int _damage;
-        private float _shootRange;
-        private float _shootCooldownSeconds;
-        private float _projectileSpeed;
-
-        private float _timeTillShoot;
-        private Vector3 _shootDirection;
 
         private Direction _currentFacingDirection;
 
@@ -52,12 +45,11 @@ namespace Components
             float projectileSpeed)
         {
             _moveSpeed = playerMoveSpeed;
-            _damage = damage;
-            _shootRange = shootRange;
-            _shootCooldownSeconds = shootCooldownSeconds;
-            _projectileSpeed = projectileSpeed;
 
             _playerAnimator.Init(shootCooldownSeconds);
+
+            _playerShootBlock.Init(this, damage, shootRange, shootCooldownSeconds, projectileSpeed, _playerAnimator,
+                _gameFactory, _enemyService);
 
             _playerMover = new PlayerMover(this, _moveSpeed, _inputService);
 
@@ -70,18 +62,17 @@ namespace Components
         public void TimeTick(float deltaTime)
         {
             _playerMover.TimeTick(deltaTime);
-            ProcessShooting(deltaTime);
+            _playerShootBlock.TimeTick(deltaTime);
         }
 
         public void Shoot()
         {
-            _gameFactory.SpawnProjectile(_weaponTransform.position, _weaponTransform.rotation, _currentFacingDirection,
-                _shootDirection, _projectileSpeed, _damage);
+            _playerShootBlock.Shoot(_currentFacingDirection);
         }
 
         public void OnReceiveInputX(float inputValue)
         {
-            RotateModel(inputValue > 0 ? Direction.Right : Direction.Left);
+            TryRotateModel(inputValue > 0 ? Direction.Right : Direction.Left);
         }
 
         private void OnHealthChanged(object sender, EventArgs e)
@@ -92,30 +83,7 @@ namespace Components
             }
         }
 
-        private void ProcessShooting(float deltaTime)
-        {
-            if (_enemyService.TryGetNearestEnemy(transform.position, _shootRange, out var enemy))
-            {
-                if (_timeTillShoot <= 0)
-                {
-                    StartShoot(enemy.transform.position);
-                }
-            }
-
-            if (_timeTillShoot > 0)
-            {
-                _timeTillShoot -= deltaTime;
-            }
-        }
-
-        private void StartShoot(Vector3 targetPosition)
-        {
-            _shootDirection = (targetPosition - transform.position).normalized;
-            _playerAnimator.PlayAttack();
-            _timeTillShoot = _shootCooldownSeconds;
-        }
-
-        private void RotateModel(Direction direction)
+        private void TryRotateModel(Direction direction)
         {
             if (_currentFacingDirection == direction)
             {
