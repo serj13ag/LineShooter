@@ -2,6 +2,49 @@
 
 One of the test task projects.
 
+# Task
+
+Summary:
+Enemies are moving from top to bottom of the screen in portrait orientation along 3 lines. The player moves along the bottom of the playing field and shoots enemies
+to prevent them from reaching the finish line.
+
+Player logic:
+- Player located at the bottom of the screen, user controls player movement with WASD keys
+- Player movement is limited to a rectangular area. On the left, on the right, at the bottom - the borders of the screen, on top - the finish line
+- Player automatically shoots at the nearest enemy inside the radius of his attack
+
+Enemy logic:
+- Enemies are spawned randomly in one of 3 spawn points with a certain cooldown
+- Enemy moving straight to the bottom of the screen with a certain speed
+- When enemy crosses finish line it deals 1 damage to the player and dissapears
+- When player hits the enemy the health of the enemy decreases by player damage value
+- When enemy health decreased by 0 he dies;
+
+Win and defeat:
+- Player wins when all enemies died
+- Player loses when his health reaches 0
+
+UI:
+- At the top of the screen you can see player healthbar
+- When you lose, a window opens with the title "Defeat" and a button “Restart”, by clicking on that button the game restarts
+- When you win, a window opens with the title "Victory" and the “Restart” button
+
+Settings:
+- Number of enemies that player needs to destroy in order to win [range int]. At the start of the game this number is randomized between min and max values
+- Cooldown for a enemy to spawn [range float]. Next enemy spawns after randomized value between min and max
+- Enemy moving speed [range float]. Speed of each enemy randomized between min and max
+- Enemy health [int]
+- Player health [int]
+- Player attack range [float]
+- Player attack speed [float]
+- Player shoot damage [int]
+- Player projectile speed [float]
+
+Tech requirements:
+- Project must be 2D
+- Implement enemy spawn logic using "Factory" pattern
+- Scene orientation is vertical
+
 ## Key Features
 
 ### Application Entry Point
